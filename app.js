@@ -41,7 +41,7 @@ app.use(cors(
 app.use(session( {
   secret: 'ironphones auth blah',
   resave: true,
-  saveUninitialize: true
+  saveUninitialized: true
 }));
 app.use(passport.initialize());
 app.use(passport.session());

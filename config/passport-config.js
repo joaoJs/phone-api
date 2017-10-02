@@ -12,7 +12,7 @@ passport.serializeUser((user, done) => {
 
 //deserializeUser: what will become "req.user" on every request
 passport.deserializeUser((id, done) => {
-  UserMode.findById(
+  UserModel.findById(
     id, (err, user) => {
       if (err) {
         done(err);

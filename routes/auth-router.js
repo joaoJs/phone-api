@@ -42,6 +42,15 @@ router.post('/process-signup', (req,res,next) => {
           return;
         }
 
+        // "req.login" is a Passport method
+        req.login(theUser, (err) => {
+          if (err) {
+            console.log('User auto-login error', err);
+            res.status(500).json({errorMessage: 'Error logging in user'});
+            return;
+          }
+        });
+
         theUser.encryptedPassword = undefined;
         res.status(200).json(theUser);
       });
