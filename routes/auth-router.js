@@ -57,7 +57,7 @@ router.post('/process-login', (req,res,next) => {
       return;
     }
 
-      if (!theUser) {
+      if (!user) {
         res.status(401).json({errorMessage: extraInfo.message});
         return;
       }

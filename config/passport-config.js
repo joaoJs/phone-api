@@ -2,7 +2,7 @@ const passport      = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt        = require('bcrypt');
 
-const UserModel =  require('../models/user-model');
+const UserModel =  require('../models/user0model');
 
 
 // serializeUser: what to save in the session after logging in
