@@ -6,7 +6,11 @@ const cookieParser = require('cookie-parser');
 const bodyParser   = require('body-parser');
 const layouts      = require('express-ejs-layouts');
 const mongoose     = require('mongoose');
-const cors = require('cors');
+const cors         = require('cors');
+const passport     = require('passport');
+const session      = require('express-session');
+
+require('./config/passport-config');
 
 
 mongoose.connect('mongodb://localhost/ironphones-express');
@@ -29,6 +33,13 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(layouts);
 app.use(cors());
+app.use(session( {
+  secret: 'ironphones auth blah',
+  resave: true,
+  saveUninitialize: true
+}));
+app.use(passport.initialize());
+app.use(passport.session());
 
 
 const index = require('./routes/index');
@@ -36,6 +47,9 @@ app.use('/', index);
 
 const myPhoneRoutes = require('./routes/phone-api-router.js');
 app.use('/api', myPhoneRoutes);
+
+const authRoutes = require('./routes/auth-router.js');
+app.use('/api', authRoutes);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
