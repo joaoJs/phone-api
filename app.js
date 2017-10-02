@@ -32,7 +32,12 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(layouts);
-app.use(cors());
+app.use(cors(
+  {
+    credentials: true,
+    origin: ['http://localhost:4200']
+  }
+));
 app.use(session( {
   secret: 'ironphones auth blah',
   resave: true,
