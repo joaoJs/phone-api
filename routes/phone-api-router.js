@@ -23,11 +23,17 @@ router.get('/phones', (req,res,next) => {
 
 
 router.post('/phones', (req,res,next) => {
+  if (!req.user) {
+    res.status(401).json({errorMessage: 'Not logged in.'});
+    return;
+  }
   const thePhone = new PhoneModel({
+
     name: req.body.name,
     brand: req.body.brand,
     image: req.body.image,
-    specs: req.body.specs
+    specs: req.body.specs,
+    phoner: req.user._id
   });
 
   thePhone.save((err) => {
@@ -106,16 +112,38 @@ router.put('/phones/:id', (req,res,next) => {
 
 
 router.delete('/phones/:id', (req,res,next) => {
-  PhoneModel.findByIdAndRemove(
+  if (!req.user) {
+    res.status(401).json({errorMessage: 'Not logged in.'});
+    return;
+  }
+
+  PhoneModel.findById(
     req.params.id,
+
     (err, phone) => {
       if (err) {
-        console.log('Phone DELETE error --> ', err);
-        res.status(400).json({errorMessage: 'phone delete went wrong.'});
+        console.log('Phone OWNER confirmation error --> ', err);
+        res.status(500).json({errorMessage: 'phone OWNER confirmation wrong.'});
         return;
       }
 
-      res.status(200).json(phone);
+      if (phone.phoner.toString() !== req.user._id.toString()) {
+        res.status(403).json({errorMessage: 'Phone not yours.'});
+        return;
+      }
+
+      PhoneModel.findByIdAndRemove(
+        req.params.id,
+        (err, phone) => {
+          if (err) {
+            console.log('Phone DELETE error --> ', err);
+            res.status(400).json({errorMessage: 'phone delete went wrong.'});
+            return;
+          }
+
+          res.status(200).json(phone);
+        }
+      );
     }
   );
 });
