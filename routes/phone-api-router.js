@@ -148,5 +148,25 @@ router.delete('/phones/:id', (req,res,next) => {
   );
 });
 
+router.get('/myphones', (req,res,next) => {
+  if (!req.user) {
+    res.status(401).json({ errorMessage: 'Not logged in.' });
+    return;
+  }
+
+  PhoneModel.find({phoner: req.user._id})
+    .sort({ _id: -1})
+    .exec((err, phones) => {
+      if (err) {
+        res.status(500).json(
+          {errorMessage: 'My phone went wrong.'}
+        );
+        return;
+      }
+
+      res.status(200).json(phones);
+    });
+});
+
 
 module.exports = router;
