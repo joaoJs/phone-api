@@ -10,10 +10,11 @@ const cors         = require('cors');
 const passport     = require('passport');
 const session      = require('express-session');
 
+require('dotenv').config();
+
 require('./config/passport-config');
 
-
-mongoose.connect('mongodb://localhost/ironphones-express');
+mongoose.connect(process.env.MONGODB_URI);
 
 const app = express();
 
@@ -46,15 +47,22 @@ app.use(session( {
 app.use(passport.initialize());
 app.use(passport.session());
 
-
+/*
 const index = require('./routes/index');
 app.use('/', index);
+*/
 
 const myPhoneRoutes = require('./routes/phone-api-router.js');
 app.use('/api', myPhoneRoutes);
 
 const authRoutes = require('./routes/auth-router.js');
 app.use('/api', authRoutes);
+
+// after routes
+
+app.use((req,res,next) => {
+  res.sendFile(__dirname + '/public/index.html');
+});
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
